@@ -1,0 +1,13 @@
+{
+  "name": "india-women-safety-dashboard",
+  "version": "1.0.0",
+  "description": "India Women Safety & Justice Analytics Dashboard (2014-2025)",
+  "main": "index.html",
+  "scripts": {
+    "dev": "python -m http.server 5000"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}

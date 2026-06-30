@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>India Women Safety & Justice Analytics Dashboard (2014-2025)</title>
+    
+    <!-- Leaflet Map styling -->
+    <link rel="stylesheet" href="lib/leaflet.css" />
+    <!-- Custom styling framework -->
+    <link rel="stylesheet" href="css/dashboard.css" />
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-icon">🇮🇳</div>
+                <div class="logo-text">
+                    <h2>MHA & NCRB</h2>
+                    <div class="logo-sub">Safety Intelligence</div>
+                </div>
+            </div>
+            
+            <ul class="nav-links">
+                <li class="nav-item active">
+                    <a href="#" class="nav-link" data-page="overview">
+                        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                        <span>India Overview</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-page="statewise">
+                        <svg viewBox="0 0 24 24"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"></polygon><line x1="9" y1="3" x2="9" y2="18"></line><line x1="15" y1="6" x2="15" y2="21"></line></svg>
+                        <span>State-wise Analysis</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-page="justice">
+                        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                        <span>Justice Delivery</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-page="victim">
+                        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        <span>Victim Demographics</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-page="safetyindex">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        <span>Safety Index Scores</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-page="initiatives">
+                        <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                        <span>Govt Initiatives</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-page="predictive">
+                        <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                        <span>Predictive Forecasts</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-page="insights">
+                        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                        <span>AI insights</span>
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <span style="font-size: 11px; font-weight:600; color: var(--text-secondary)">Theme</span>
+                <button class="theme-toggle-btn" id="theme-toggle" title="Toggle Light/Dark Theme">
+                    <div class="theme-toggle-icons">
+                        <span>☀️</span>
+                        <span>🌙</span>
+                    </div>
+                    <div class="theme-toggle-thumb">⚡</div>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Dashboard Viewport -->
+        <main class="main-content">
+            <!-- Header bar & Motivational quotes -->
+            <header class="header-bar">
+                <div class="header-title">
+                    <h1>India Women Safety & Justice Analytics</h1>
+                    <p>MHA and NCRB Aligned Performance Monitoring Portal (2014–2025)</p>
+                </div>
+                
+                <div class="quotes-container">
+                    <span id="rotating-quote">"A nation is truly developed when its women can walk freely and fearlessly."</span>
+                </div>
+            </header>
+
+            <!-- Global filters -->
+            <section class="filter-bar">
+                <div class="filter-group">
+                    <label class="filter-label" for="filter-year">Year Scope</label>
+                    <select class="filter-select" id="filter-year"></select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label" for="filter-state">State / UT</label>
+                    <select class="filter-select" id="filter-state">
+                        <option value="All">All India States</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label" for="filter-region">Region Zones</label>
+                    <select class="filter-select" id="filter-region">
+                        <option value="All">All Regions</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label" for="filter-crime-type">Crime Category</label>
+                    <select class="filter-select" id="filter-crime-type">
+                        <option value="All">All Crimes</option>
+                        <option value="Rape Cases">Rape Cases</option>
+                        <option value="POCSO Cases">POCSO Cases</option>
+                        <option value="Attempt to Rape">Attempt to Rape</option>
+                        <option value="Domestic Violence">Domestic Violence</option>
+                        <option value="Kidnapping & Abduction">Kidnapping & Abduction</option>
+                        <option value="Acid Attack">Acid Attack</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label" for="filter-age-group">Victim Age Group</label>
+                    <select class="filter-select" id="filter-age-group">
+                        <option value="All">All Age Cohorts</option>
+                        <option value="Under 12">Under 12 Years</option>
+                        <option value="12–18">12–18 Years</option>
+                        <option value="18–25">18–25 Years</option>
+                        <option value="26–40">26–40 Years</option>
+                        <option value="40+">Above 40 Years</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label" for="filter-urban-rural">Demographics</label>
+                    <select class="filter-select" id="filter-urban-rural">
+                        <option value="All">Urban & Rural</option>
+                        <option value="Urban">Urban Areas</option>
+                        <option value="Rural">Rural Areas</option>
+                    </select>
+                </div>
+                <button class="clear-filters-btn" id="clear-filters">Reset Filters</button>
+            </section>
+
+            <!-- Dashboard Viewport tabs -->
+            <div class="dashboard-viewport">
+
+                <!-- Dynamic KPI Grid (Loaded on all tabs) -->
+                <div class="kpi-container" style="margin-bottom: 30px;">
+                    <div class="kpi-card crime">
+                        <div class="kpi-title">Total Crimes Against Women</div>
+                        <div class="kpi-value" id="kpi-total-crimes">-</div>
+                        <div class="kpi-subtext">Total cases registered</div>
+                    </div>
+                    <div class="kpi-card crime">
+                        <div class="kpi-title">Rape Cases Registered</div>
+                        <div class="kpi-value" id="kpi-rape-cases">-</div>
+                        <div class="kpi-subtext negative">IPC Section 376</div>
+                    </div>
+                    <div class="kpi-card crime">
+                        <div class="kpi-title">Domestic Violence (DV)</div>
+                        <div class="kpi-value" id="kpi-domestic-violence">-</div>
+                        <div class="kpi-subtext">IPC Sec 498A</div>
+                    </div>
+                    <div class="kpi-card crime">
+                        <div class="kpi-title">POCSO Cases Logged</div>
+                        <div class="kpi-value" id="kpi-pocso-cases">-</div>
+                        <div class="kpi-subtext">Child Sexual Abuse</div>
+                    </div>
+                    <div class="kpi-card justice">
+                        <div class="kpi-title">Conviction Rate</div>
+                        <div class="kpi-value" id="kpi-conviction-rate">-%</div>
+                        <div class="kpi-subtext positive">Cases resolved convicted</div>
+                    </div>
+                    <div class="kpi-card justice">
+                        <div class="kpi-title">Court Pendency</div>
+                        <div class="kpi-value" id="kpi-court-pendency">-%</div>
+                        <div class="kpi-subtext">Cases awaiting verdict</div>
+                    </div>
+                    <div class="kpi-card safety">
+                        <div class="kpi-title">Nirbhaya Fund Utilized</div>
+                        <div class="kpi-value" id="kpi-nirbhaya-util">-%</div>
+                        <div class="kpi-subtext">Capital utilization</div>
+                    </div>
+                </div>
+
+                <!-- PAGE 1: INDIA OVERVIEW -->
+                <div class="dashboard-page active" id="page-overview">
+                    <div class="grid-2-1">
+                        <div class="widget-card">
+                            <div class="widget-header">
+                                <div class="widget-title">
+                                    <h3>National Crime Trends (2014-2025)</h3>
+                                    <p>Historical progression showing registered cases of Rape, POCSO, and total Crimes</p>
+                                </div>
+                            </div>
+                            <div class="widget-body" style="height: 350px;">
+                                <canvas id="trend-chart"></canvas>
+                            </div>
+                        </div>
+                        <div class="widget-card">
+                            <div class="widget-header">
+                                <div class="widget-title">
+                                    <h3>Growth Analytics</h3>
+                                    <p>Overall Compound Growth & Forecast</p>
+                                </div>
+                            </div>
+                            <div class="widget-body" id="growth-metrics" style="min-height: 120px; display:flex; flex-direction:column; justify-content:center;">
+                                <!-- Loaded dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget-card">
+                        <div class="widget-header">
+                            <div class="widget-title">
+                                <h3>Monthly Crime Distribution (Seasonality Heatmap)</h3>
+                                <p>Crime occurrences categorized by month to spot regional seasonal spikes</p>
+                            </div>
+                        </div>
+                        <div class="widget-body">
+                            <div id="monthly-heatmap"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PAGE 2: STATE-WISE ANALYSIS -->
+                <div class="dashboard-page" id="page-statewise">
+                    <div class="grid-2-1">
+                        <div class="widget-card">
+                            <div class="widget-header">
+                                <div class="widget-title">
+                                    <h3>India Choropleth Analytics Map</h3>
+                                    <p>Visual map scaling boundaries based on selected indicators</p>
+                                </div>
+                                <div class="widget-actions">
+                                    <select class="filter-select" id="map-metric-select" style="min-width: 170px;">
+                                        <option value="crimes">Reported Cases</option>
+                                        <option value="crimeRate">Crime Rate per Lakh</option>
+                                        <option value="convictionRate">Conviction Rate %</option>
+                                        <option value="score">Safety Score</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="widget-body" style="height: 500px;">
+                                <div class="map-viewport" id="choropleth-map"></div>
+                            </div>
+                        </div>
+                        <div class="grid-column" style="display:flex; flex-direction:column; gap:25px;">
+                            <div class="widget-card">
+                                <div class="widget-header">
+                                    <div class="widget-title">
+                                        <h3>State Rankings (Comparison Charts)</h3>
+                                        <p>Select metrics to compare state performance indicators</p>
+                                    </div>
+                                    <div class="widget-actions">
+                                        <select class="filter-select" id="top-states-metric" style="min-width: 140px;">
+                                            <option value="crimes">Reported Cases</option>
+                                            <option value="crimeRate">Crime Rate per Lakh</option>
+                                            <option value="convictionRate">Conviction Rate %</option>
+                                            <option value="score">Safety Score</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="widget-body" style="height: 200px;">
+                                    <canvas id="top-states-chart"></canvas>
+                                </div>
+                            </div>
+                            <div class="widget-card">
+                                <div class="widget-header">
+                                    <div class="widget-title">
+                                        <h3>Lowest Impact States (Safest)</h3>
+                                        <p>Bottom ten states with lowest crime/highest conviction rates</p>
+                                    </div>
+                                </div>
+                                <div class="widget-body" style="height: 200px;">
+                                    <canvas id="bottom-states-chart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PAGE 3: JUSTICE DELIVERY ANALYSIS -->
+                <div class="dashboard-page" id="page-justice">
+                    <!-- Gauge Grid -->
+                    <div class="grid-3">
+                        <div class="widget-card" style="padding: 15px;">
+                            <div id="gauge-conviction"></div>
+                        </div>
+                        <div class="widget-card" style="padding: 15px;">
+                            <div id="gauge-pendency"></div>
+                        </div>
+                        <div class="widget-card" style="padding: 15px;">
+                            <div id="gauge-nirbhaya"></div>
+                        </div>
+                    </div>
+
+                    <div class="widget-card">
+                        <div class="widget-header">
+                            <div class="widget-title">
+                                <h3>Sankey Prosecution Pipeline Flow</h3>
+                                <p>Sankey link distribution tracing case flows from FIR to Final Judicial Disposition</p>
+                            </div>
+                        </div>
+                        <div class="widget-body">
+                            <div class="sankey-container" id="sankey-diagram"></div>
+                        </div>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="widget-card">
+                            <div class="widget-header">
+                                <div class="widget-title">
+                                    <h3>Case Disposition Funnel Conversion</h3>
+                                    <p>Pipeline attrition ratios relative to starting FIRs</p>
+                                </div>
+                            </div>
+                            <div class="widget-body" id="justice-funnel">
+                                <!-- Loaded dynamically -->
+                            </div>
+                        </div>
+                        <div class="widget-card">
+                            <div class="widget-header">
+                                <div class="widget-title">
+                                    <h3>Case Resolution Trend (2014-2025)</h3>
+                                    <p>Comparing court pending volumes against actual resolved outcomes</p>
+                                </div>
+                            </div>
+                            <div class="widget-body" style="height: 250px;">
+                                <canvas id="resolution-trend-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Decomposition Tree & Key Influencers -->
+                    <div class="grid-2-1">
+                        <div class="widget-card">
+                            <div class="widget-header">
+                                <div class="widget-title">
+                                    <h3>Decomposition Tree Analysis</h3>
+                                    <p>Interactive tree drill-down: click crime categories to expand age cohort breakdowns</p>
+                                </div>
+                            </div>
+                            <div class="widget-body">
+                                <div id="decomposition-tree" class="decomp-container"></div>
+                            </div>
+                        </div>
+                        <div class="widget-card">
+                            <div class="widget-header">
+                                <div class="widget-title">
+                                    <h3>Key Influencers</h3>
+                                    <p>Statistical correlations affecting safety outcomes</p>
+                                </div>
+                            </div>
+                            <div class="widget-body" id="key-influencers">
+                                <!-- Loaded dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PAGE 4: VICTIM ANALYSIS -->
+                <div class="dashboard-page" id="page-victim">
+                    <div class="grid-2">
+                        <div class="widget-card">
+                            <div class="widget-header">
+                                <div class="widget-title">
+                                    <h3>Victim Age Group Distribution</h3>
+                                    <p>Proportion of registered offenses organized by victim age category</p>
+                                </div>
+                            </div>
+                            <div class="widget-body" style="height: 320px;">
+                                <canvas id="age-group-chart"></canvas>
+                            </div>
+                        </div>
+                        <div class="widget-card">
+                            <div class="widget-header">
+                                <div class="widget-title">
+                                    <h3>Urban vs Rural Disparity</h3>
+                                    <p>Comparing indicators across municipal and rural districts</p>
+                                </div>
+                            </div>
+                            <div class="widget-body" id="urban-rural-compare">
+                                <!-- Loaded dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget-card">
+                        <div class="widget-header">
+                            <div class="widget-title">
+                                <h3>Victim-Offender Relationship (Treemap Share)</h3>
+                                <p>NCRB-based proportion illustrating offender relations to victims</p>
+                            </div>
+                        </div>
+                        <div class="widget-body">
+                            <div id="offender-treemap"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PAGE 5: SAFETY INDEX -->
+                <div class="dashboard-page" id="page-safetyindex">
+                    <div class="grid-2-1">
+                        <div class="widget-card">
+                            <div class="widget-header">
+                                <div class="widget-title">
+                                    <h3>State-wise Women Safety Index Rankings</h3>
+                                    <p>Comprehensive safety scores calculated via local infrastructure and crime rates</p>
+                                </div>
+                            </div>
+                            <div class="widget-body">
+                                <div id="safety-index-table" class="table-container"></div>
+                            </div>
+                        </div>
+                        <div class="widget-card">
+                            <div class="widget-header">
+                                <div class="widget-title">
+                                    <h3>Safety Indicator Comparison Radar</h3>
+                                    <p>Comparing parameters of Top State against Selected State</p>
+                                </div>
+                            </div>
+                            <div class="widget-body" style="height: 380px;">
+                                <canvas id="safety-radar-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PAGE 6: GOVERNMENT INITIATIVES -->
+                <div class="dashboard-page" id="page-initiatives">
+                    <div class="widget-card">
+                        <div class="widget-header">
+                            <div class="widget-title">
+                                <h3>Central Government Safety Missions & Impact Metrics</h3>
+                                <p>Performance metrics of dedicated infrastructure, emergency services, and app distributions</p>
+                            </div>
+                        </div>
+                        <div class="widget-body">
+                            <div class="init-card-grid" id="initiatives-grid">
+                                <!-- Loaded dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PAGE 7: PREDICTIVE ANALYTICS -->
+                <div class="dashboard-page" id="page-predictive">
+                    <div class="widget-card">
+                        <div class="widget-header" style="flex-wrap: wrap; gap:15px;">
+                            <div class="widget-title">
+                                <h3>Machine Learning Predictive Forecast (2026-2030)</h3>
+                                <p>Model trends based on historical values showing 95% confidence intervals</p>
+                            </div>
+                            <div class="widget-actions" style="gap:15px; flex-wrap:wrap;">
+                                <div class="btn-group" id="forecast-metric-selector">
+                                    <button class="btn-group-btn active" data-metric="rapeCases">Rape Cases</button>
+                                    <button class="btn-group-btn" data-metric="totalCrimes">Total Crimes</button>
+                                    <button class="btn-group-btn" data-metric="pendingCases">Court Pendency</button>
+                                </div>
+                                <div class="btn-group" id="forecast-model-selector">
+                                    <button class="btn-group-btn" data-model="regression">Linear Regression</button>
+                                    <button class="btn-group-btn" data-model="arima">ARIMA Model</button>
+                                    <button class="btn-group-btn active" data-model="prophet">Prophet Model</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="widget-body" style="height: 400px;">
+                            <canvas id="forecast-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PAGE 8: INSIGHTS & RECOMMENDATIONS -->
+                <div class="dashboard-page" id="page-insights">
+                    <div class="widget-card">
+                        <div class="widget-header">
+                            <div class="widget-title">
+                                <h3>AI-Driven Policy Recommendations & Strategic Action Plan</h3>
+                                <p>Automated intelligence report analyzing local crime indices and justice parameters</p>
+                            </div>
+                        </div>
+                        <div class="widget-body" id="ai-insights-panel">
+                            <!-- Loaded dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hidden inputs/KPI card value slots to satisfy query filters -->
+                <div style="display:none;">
+                    <div id="kpi-attempt-rape"></div>
+                    <div id="kpi-kidnapping"></div>
+                    <div id="kpi-acid-attacks"></div>
+                    <div id="kpi-chargesheeted"></div>
+                    <div id="kpi-convicted"></div>
+                    <div id="kpi-acquitted"></div>
+                    <div id="kpi-pending-investigation"></div>
+                    <div id="kpi-pending-trial"></div>
+                    <div id="kpi-chargesheet-rate"></div>
+                    <div id="kpi-ftcs"></div>
+                    <div id="kpi-helplines"></div>
+                    <div id="kpi-one-stop-centers"></div>
+                    <div id="kpi-wps"></div>
+                    <div id="kpi-safe-city"></div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Script References (Local offline files) -->
+    <script src="lib/leaflet.js"></script>
+    <script src="lib/chart.js"></script>
+    <script src="lib/india_state_geojson.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/forecast.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
